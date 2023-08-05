@@ -19,10 +19,10 @@ public class Client {
 
     public Client() { }
 
-    public Client(String first, String last, String middle) {
+    public Client(String first, String last, String email) {
         this.firstName = first;
         this.lastName = last;
-        this.email = middle;
+        this.email = email;
     }
 
     public String getFirstName() {
