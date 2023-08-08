@@ -1,11 +1,9 @@
 package com.mindhub.Homebankin.models;
 
+import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
@@ -14,19 +12,26 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
     private long id;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "dueno_id")
+    private Client dueno;
     private String number;
     private LocalDate creationDate;
     private double balance;
 
 
+
+
     public Account() { }
 
-    public Account(String number,LocalDate creationDate, double balance){
+    public Account(String number,LocalDate creationDate, double balance,Client dueno){
         this.number = number;
         this.creationDate = creationDate;
         this.balance = balance;
+        this.dueno = dueno;
     }
     public Long getId(){
+
         return id;
     }
 
@@ -53,6 +58,14 @@ public class Account {
         return balance;
     }
     public void setBalance(double balance){
+
         this.balance = balance;
+    }
+
+    public Client getDueno(){
+        return dueno;
+    }
+    public void setDueno(Client dueno){
+        this.dueno = dueno;
     }
 }
