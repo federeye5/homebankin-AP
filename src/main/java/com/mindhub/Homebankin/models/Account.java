@@ -62,9 +62,11 @@ public class Account {
         this.balance = balance;
     }
 
+
     public Client getDueno(){
         return dueno;
     }
+
     public void setDueno(Client dueno){
         this.dueno = dueno;
     }

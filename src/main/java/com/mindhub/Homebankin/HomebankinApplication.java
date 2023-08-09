@@ -44,6 +44,13 @@ public class HomebankinApplication {
 			account2.setDueno(client1);
 			accountRepository.save(account2);
 			clientRepository.save(client1);
+
+			Account account3 = new Account();
+			account3.setCreationDate(LocalDate.now().plusDays(1));
+			account3.setBalance(7500);
+			account3.setDueno(client2);
+			accountRepository.save(account3);
+			clientRepository.save(client2);
 		});
 	}
 }
