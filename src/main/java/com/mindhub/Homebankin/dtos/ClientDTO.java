@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class ClientDTO {
     private Long id;
-    Set <AccountDTO> accounts;
+    private Set <AccountDTO> accounts;
     private String firstName;
     private String lastName;
     private String email;
