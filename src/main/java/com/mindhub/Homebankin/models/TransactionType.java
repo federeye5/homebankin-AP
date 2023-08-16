@@ -1,10 +1,10 @@
 package com.mindhub.Homebankin.models;
 
 public enum TransactionType {
-    CREDIT(1),
-    DEBIT(-1);
+    CREDIT,
+    DEBIT,
 
-    private final int sign;
+   /* private final int sign;
 
     TransactionType(int sign) {
         this.sign = sign;
@@ -12,5 +12,5 @@ public enum TransactionType {
 
     public int getSign() {
         return sign;
-    }
+    }*/
 }

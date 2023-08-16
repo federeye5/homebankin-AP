@@ -28,7 +28,7 @@ public class Transaction {
         this.date = date;
         this.transaccion = transaccion;
         this.type = type;
-        this.amount = amount * type.getSign();
+        this.amount = amount; //* type.getSign();
     }
     public Long getId(){
 
