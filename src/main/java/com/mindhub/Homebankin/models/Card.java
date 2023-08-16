@@ -7,48 +7,46 @@ import java.time.LocalDate;
 @Entity
 public class Card {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @GenericGenerator(name = "native", strategy = "native")
     private long id;
 
-    private CardType cardType;
+    private CardType type;
     private String number;
-    private short securityCode;
+    private String cvv;
     private LocalDate fromDate;
     private LocalDate thruDate;
 
-    private String cardOwner;
+    private String cardHolder;
 
-    private CardColor cardColor;
+    private CardColor color;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "owner_id")
+    @JoinColumn(name = "client_id")
     private Client client;
 
     public Card(){   }
 
-    public Card(CardType type, String number, short code, LocalDate fromDate, LocalDate thruDate, String owner,
-                CardColor cardColor, Client client) {
-        this.cardType = type;
+    public Card(CardType type, CardColor color, String number, LocalDate fromDate, LocalDate thruDate, String cvv, String cardHolder) {
+        this.type = type;
+        this.color = color;
         this.number = number;
-        this.securityCode = code;
         this.fromDate = fromDate;
         this.thruDate = thruDate;
-        this.cardOwner = owner;
-        this.cardColor = cardColor;
-        this.client = client;
+        this.cvv = cvv;
+        this.cardHolder = cardHolder;
     }
 
     public long getId() {
         return id;
     }
 
-    public CardType getCardType() {
-        return cardType;
+    public CardType getType() {
+        return type;
     }
 
-    public void setCardType(CardType cardType) {
-        this.cardType = cardType;
+    public void setType(CardType type) {
+        this.type = type;
     }
 
     public String getNumber() {
@@ -59,12 +57,12 @@ public class Card {
         this.number = number;
     }
 
-    public short getSecurityCode() {
-        return securityCode;
+    public String getCvv() {
+        return cvv;
     }
 
-    public void setSecurityCode(short securityCode) {
-        this.securityCode = securityCode;
+    public void setCvv(String cvv) {
+        this.cvv = cvv;
     }
 
     public LocalDate getFromDate() {
@@ -83,20 +81,20 @@ public class Card {
         this.thruDate = thruDate;
     }
 
-    public String getCardOwner() {
-        return cardOwner;
+    public String getCardHolder() {
+        return cardHolder;
     }
 
-    public void setCardOwner(String cardOwner) {
-        this.cardOwner = cardOwner;
+    public void setCardHolder(String cardHolder) {
+        this.cardHolder = cardHolder;
     }
 
-    public CardColor getCardColor() {
-        return cardColor;
+    public CardColor getColor() {
+        return color;
     }
 
-    public void setCardColor(CardColor cardColor) {
-        this.cardColor = cardColor;
+    public void setColor(CardColor color) {
+        this.color = color;
     }
 
     public Client getClient() {

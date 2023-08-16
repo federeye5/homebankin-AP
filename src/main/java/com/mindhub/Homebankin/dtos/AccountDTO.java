@@ -16,6 +16,7 @@ public class AccountDTO {
     private LocalDate creationDate;
     private double balance;
 
+    public AccountDTO(){}
     public AccountDTO(Account account){
         this.id = account.getId();
         this.number = account.getNumber();
@@ -30,10 +31,6 @@ public class AccountDTO {
 
     public String getNumber() {
         return number;
-    }
-
-    public void number(String number) {
-        this.number = number;
     }
 
     public LocalDate getCreationDate() {

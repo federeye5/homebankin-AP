@@ -10,39 +10,40 @@ import java.time.LocalDate;
 
 public class CardDTO {
     private long id;
-    private CardType cardType;
+    private CardType type;
     private String number;
-    private short securityCode;
+    private String cvv;
     private LocalDate fromDate;
     private LocalDate thruDate;
-    private String cardOwner;
-    private CardColor cardColor;
+    private String cardHolder;
+    private CardColor color;
 
+    public CardDTO(){}
     public CardDTO(Card card) {
         this.id = card.getId();
-        this.cardType = card.getCardType();
+        this.type = card.getType();
         this.number = card.getNumber();
-        this.securityCode = card.getSecurityCode();
+        this.cvv = card.getCvv();
         this.fromDate = card.getFromDate();
         this.thruDate = card.getThruDate();
-        this.cardOwner = card.getCardOwner();
-        this.cardColor = card.getCardColor();
+        this.cardHolder = card.getCardHolder();
+        this.color = card.getColor();
     }
 
     public long getId() {
         return id;
     }
 
-    public CardType getCardType() {
-        return cardType;
+    public CardType getType() {
+        return type;
     }
 
     public String getNumber() {
         return number;
     }
 
-    public short getSecurityCode() {
-        return securityCode;
+    public String getCvv() {
+        return cvv;
     }
 
     public LocalDate getFromDate() {
@@ -53,11 +54,11 @@ public class CardDTO {
         return thruDate;
     }
 
-    public String getCardOwner() {
-        return cardOwner;
+    public String getCardHolder() {
+        return cardHolder;
     }
 
-    public CardColor getCardColor() {
-        return cardColor;
+    public CardColor getColor() {
+        return color;
     }
 }

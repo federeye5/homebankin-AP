@@ -14,19 +14,19 @@ public class Transaction {
     private long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="transaccion_id")
-    private Account transaccion;
+    @JoinColumn(name="account_id")
+    private Account account;
     private TransactionType type;
     private LocalDateTime date;
     private double amount;
-    private String descripcion;
+    private String description;
 
     public Transaction(){ }
 
-    public Transaction(String descripcion,double amount, LocalDateTime date, Account transaccion, TransactionType type){
-        this.descripcion = descripcion;
+    public Transaction(String description,double amount, LocalDateTime date, Account account, TransactionType type){
+        this.description = description;
         this.date = date;
-        this.transaccion = transaccion;
+        this.account = account;
         this.type = type;
         this.amount = amount; //* type.getSign();
     }
@@ -34,14 +34,14 @@ public class Transaction {
 
         return id;
     }
-    public String getDescripcion() {
+    public String getDescription() {
 
-        return descripcion;
+        return description;
     }
 
-    public void setDescripcion(String descripcion) {
+    public void setDescription(String description) {
 
-        this.descripcion = descripcion;
+        this.description = description;
     }
     public LocalDateTime getDate() {
 
@@ -62,12 +62,12 @@ public class Transaction {
 
         this.amount = amount;
     }
-    public Account getTransaccion(){
-        return transaccion;
+    public Account getAccount(){
+        return account;
     }
 
-    public void setTransaccion(Account transaccion){
-        this.transaccion = transaccion;
+    public void setAccount(Account account){
+        this.account = account;
     }
 
     public TransactionType getType() {

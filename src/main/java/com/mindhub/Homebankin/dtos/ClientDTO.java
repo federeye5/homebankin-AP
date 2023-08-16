@@ -17,6 +17,7 @@ public class ClientDTO {
     private String lastName;
     private String email;
 
+    public ClientDTO(){}
     public ClientDTO(Client client){
         this.id = client.getId();
 
@@ -28,9 +29,9 @@ public class ClientDTO {
 
         this.accounts = client.getAccounts().stream().map(AccountDTO::new).collect(Collectors.toSet());
 
-        this.loans = client.getClientLoans().stream().map(loan -> new ClientLoanDTO(loan)).collect(Collectors.toSet());
+        this.loans = client.getClientLoans().stream().map(ClientLoanDTO::new).collect(Collectors.toSet());
 
-        this.cards = client.getCards().stream().map(card -> new CardDTO(card)).collect(Collectors.toSet());
+        this.cards = client.getCards().stream().map(CardDTO::new).collect(Collectors.toSet());
 
     }
 

@@ -17,19 +17,14 @@ public class Loan {
     private double maxAmount;
 
     @ElementCollection
+    @Column(name="payments")
     private List<Integer> payments = new ArrayList<>();
 
     @OneToMany(mappedBy="loan", fetch=FetchType.EAGER)
-    private Set<ClientLoan> clients = new HashSet<>();
+    private Set<ClientLoan> clientLoans = new HashSet<>();
 
-    public Set<ClientLoan> getClients() {
-        return clients;
-    }
 
-    public void addClientLoan(ClientLoan clientloan) {
-        clientloan.setLoan(this);
-        clients.add(clientloan);
-    }
+
 
     public Loan() {
     }
@@ -67,5 +62,14 @@ public class Loan {
 
     public void setPayments(List<Integer> payments) {
         this.payments = payments;
+    }
+
+    public void addClientLoan(ClientLoan clientloan) {
+        clientloan.setLoan(this);
+        clientLoans.add(clientloan);
+    }
+
+    public Set<ClientLoan> getClientLoans() {
+        return clientLoans;
     }
 }

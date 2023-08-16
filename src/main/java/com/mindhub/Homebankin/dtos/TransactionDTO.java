@@ -9,14 +9,14 @@ import java.time.LocalDateTime;
 public class TransactionDTO {
     private long id;
     private TransactionType type;
-    private String descripcion;
+    private String description;
     private LocalDateTime date;
     private double amount;
 
     public TransactionDTO(Transaction transaction){
         this.id = transaction.getId();
         this.type = transaction.getType();
-        this.descripcion = transaction.getDescripcion();
+        this.description = transaction.getDescription();
         this.date = transaction.getDate();
         this.amount = transaction.getAmount();
     }
@@ -28,15 +28,11 @@ public class TransactionDTO {
         return type;
     }
 
-    public String getDescripcion() {
+    public String getDescription() {
 
-        return descripcion;
+        return description;
     }
 
-    public void descripcion(String descripcion) {
-
-        this.descripcion = descripcion;
-    }
 
     public LocalDateTime getDate() {
 

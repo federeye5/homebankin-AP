@@ -15,9 +15,9 @@ public class Account {
     @GenericGenerator(name = "native", strategy = "native")
     private long id;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "dueno_id")
-    private Client dueno;
-    @OneToMany(mappedBy = "transaccion",fetch = FetchType.EAGER)
+    @JoinColumn(name = "client_id")
+    private Client client;
+    @OneToMany(mappedBy = "account",fetch = FetchType.EAGER)
     private Set<Transaction> transactions = new HashSet<>();
     private String number;
     private LocalDate creationDate;
@@ -28,11 +28,11 @@ public class Account {
 
     public Account() { }
 
-    public Account(String number,LocalDate creationDate, double balance,Client dueno){
+    public Account(String number,LocalDate creationDate, double balance){
         this.number = number;
         this.creationDate = creationDate.now();
         this.balance = balance;
-        this.dueno = dueno;
+
     }
     public Long getId(){
 
@@ -68,19 +68,19 @@ public class Account {
     }
 
 
-    public Client getDueno(){
-        return dueno;
+    public Client getClient(){
+        return client;
     }
 
-    public void setDueno(Client dueno){
-        this.dueno = dueno;
+    public void setClient(Client client){
+        this.client = client;
     }
 
     public Set<Transaction> getTransactions(){
         return transactions;
     }
     public void addTransactions(Transaction transaction){
-        transaction.setTransaccion(this);
+        transaction.setAccount(this);
         transactions.add(transaction);
     }
 }

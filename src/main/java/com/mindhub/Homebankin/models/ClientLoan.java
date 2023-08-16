@@ -12,8 +12,7 @@ public class ClientLoan {
     @GenericGenerator(name = "native", strategy = "native")
     private Long id;
     private double amount;
-    /*@ElementCollection
-    private List<Integer> payments = new ArrayList<>();*/
+
     private int payments;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="client_id")
@@ -25,12 +24,16 @@ public class ClientLoan {
 
     public ClientLoan() {
     }
-
-    public ClientLoan(double amount, int payments, Client client, Loan loan) {
+    public ClientLoan(double amount, int payments){
         this.amount = amount;
         this.payments = payments;
+    }
+
+    public ClientLoan(Client client, Loan loan, int payments, double amount) {
         this.client = client;
         this.loan = loan;
+        this.payments = payments;
+        this.amount = amount;
     }
 
     public Long getId() {

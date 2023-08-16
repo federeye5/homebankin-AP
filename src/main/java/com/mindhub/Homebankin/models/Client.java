@@ -14,10 +14,10 @@ public class Client {
     @GenericGenerator(name = "native", strategy = "native")
     private long id;
 
-    @OneToMany(mappedBy = "dueno",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "client",fetch = FetchType.EAGER)
     private Set<Account> accounts = new HashSet<>();
     @OneToMany(mappedBy = "client", fetch = FetchType.EAGER)
-    private Set<ClientLoan> loans = new HashSet<>();
+    private Set<ClientLoan> clientLoans = new HashSet<>();
 
     @OneToMany(mappedBy = "client", fetch = FetchType.EAGER)
     private Set<Card> cards = new HashSet<>();
@@ -69,22 +69,23 @@ public class Client {
     }
 
     public void addAccount(Account account){
-        account.setDueno(this);
+        account.setClient(this);
         accounts.add(account);
     }
+
+
+    public void addClientLoan(ClientLoan clientLoan) {
+        clientLoan.setClient(this);
+        clientLoans.add(clientLoan);
+    }
     public Set<ClientLoan> getClientLoans() {
-        return loans;
+        return clientLoans;
     }
 
-    public void addClientLoans(ClientLoan clientLoan) {
-        clientLoan.setClient(this);
-        loans.add(clientLoan);
-    }
 
     public Set<Card> getCards() {
         return cards;
     }
-
     public void addCards(Card card) {
         card.setClient(this);
         cards.add(card);

@@ -36,7 +36,7 @@ public class HomebankinApplication {
 			account1.setNumber("VM0001");
 			account1.setCreationDate(LocalDate.now());
 			account1.setBalance(5000);
-			account1.setDueno(client1);
+			account1.setClient(client1);
 			client1.addAccount(account1);
 			clientRepository.save(client1);
 			accountRepository.save(account1);
@@ -45,7 +45,7 @@ public class HomebankinApplication {
 			account2.setNumber("VM0002");
 			account2.setCreationDate(LocalDate.now().plusDays(1));
 			account2.setBalance(7500);
-			account2.setDueno(client1);
+			account2.setClient(client1);
 			client1.addAccount(account2);
 			clientRepository.save(client1);
 			accountRepository.save(account2);
@@ -55,7 +55,7 @@ public class HomebankinApplication {
 			account3.setNumber("VM0003");
 			account3.setCreationDate(LocalDate.now().plusDays(1));
 			account3.setBalance(7500);
-			account3.setDueno(client2);
+			account3.setClient(client2);
 			client2.addAccount(account3);
 			clientRepository.save(client2);
 			accountRepository.save(account3);
@@ -63,20 +63,20 @@ public class HomebankinApplication {
 
 			Transaction transaction1 = new Transaction();
 			transaction1.setDate(LocalDateTime.now());
-			transaction1.setTransaccion(account1);
+			transaction1.setAccount(account1);
 			transaction1.setAmount(1000);
 			transaction1.setType(TransactionType.DEBIT);
-			transaction1.setDescripcion("Carne");
+			transaction1.setDescription("Carne");
 			account1.addTransactions(transaction1);
 			transactionRepository.save(transaction1);
 			accountRepository.save(account1);
 
 			Transaction transaction2 = new Transaction();
 			transaction2.setDate(LocalDateTime.now());
-			transaction2.setTransaccion(account1);
+			transaction2.setAccount(account1);
 			transaction2.setAmount(1000);
 			transaction2.setType(TransactionType.CREDIT);
-			transaction2.setDescripcion("Carne");
+			transaction2.setDescription("Carne");
 			account2.addTransactions(transaction2);
 			transactionRepository.save(transaction2);
 			accountRepository.save(account1);
@@ -92,29 +92,28 @@ public class HomebankinApplication {
 			loan1.setPayments(List.of(12,24,36,48,60));
 
 			Loan loan2 =new Loan("Personal",100000,List.of(6,12,24));
+
 			Loan loan3 =new Loan();
 			loan3.setName("Phone");
 			loan3.setMaxAmount(300000);
 			loan3.setPayments(List.of(6,12,24,36));
+
 			loanRepository.save(loan1);
 			loanRepository.save(loan2);
 			loanRepository.save(loan3);
 
-			ClientLoan clientLoan1 = new ClientLoan(400000, 60, client1, loan1);
-			ClientLoan clientLoan2 = new ClientLoan(50000, 12, client1, loan2);
-			ClientLoan clientLoan3 = new ClientLoan(100000, 24, client2, loan2);
-			ClientLoan clientLoan4 = new ClientLoan(200000, 36, client2, loan3);
+			ClientLoan clientLoan1 = new ClientLoan(client1,loan1,60,400000);
+			ClientLoan clientLoan2 = new ClientLoan(client1,loan2,12,90000);
+			ClientLoan clientLoan3 = new ClientLoan(client2,loan3,36,250000);
+			ClientLoan clientLoan4 = new ClientLoan(client2,loan1,12,450000);
 			clientLoanRepository.save(clientLoan1);
 			clientLoanRepository.save(clientLoan2);
 			clientLoanRepository.save(clientLoan3);
 			clientLoanRepository.save(clientLoan4);
 
-			Card card1 = new Card(CardType.DEBIT, "6811 5876 2458 1245", (short)417, LocalDate.now(), LocalDate.now().plusYears(5),
-					client1.toString(), CardColor.GOLD, client1);
-			Card card2 = new Card(CardType.CREDIT, "3514 1425 8952 7812", (short)333, LocalDate.now(), LocalDate.now().plusYears(5),
-					client1.toString(), CardColor.TITANIUM, client1);
-			Card card3 = new Card(CardType.DEBIT, "4387 2345 2458 1248", (short)385, LocalDate.now(), LocalDate.now().plusYears(5),
-					client2.toString(), CardColor.SILVER, client2);
+			Card card1 = new Card(CardType.DEBIT,CardColor.GOLD,"6811 5876 2458 1245",LocalDate.now(),LocalDate.now().plusYears(5),"123",client1.getFirstName()+" "+client1.getLastName());
+			Card card2 = new Card(CardType.CREDIT,CardColor.TITANIUM,"3514 1425 8952 7812",LocalDate.now(),LocalDate.now().plusYears(5),"324",client1.getFirstName()+" "+client1.getLastName());
+			Card card3 = new Card(CardType.CREDIT,CardColor.SILVER,"4387 2345 2458 1248",LocalDate.now(),LocalDate.now().plusYears(5), "231",client2.getFirstName() + " " + client2.getLastName());
 
 			client1.addCards(card1);
 			client1.addCards(card2);
