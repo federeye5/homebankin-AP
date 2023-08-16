@@ -16,7 +16,11 @@ public class Client {
 
     @OneToMany(mappedBy = "dueno",fetch = FetchType.EAGER)
     private Set<Account> accounts = new HashSet<>();
+    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER)
+    private Set<ClientLoan> loans = new HashSet<>();
 
+    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER)
+    private Set<Card> cards = new HashSet<>();
     private String firstName;
     private String lastName;
     private String email;
@@ -68,9 +72,27 @@ public class Client {
         account.setDueno(this);
         accounts.add(account);
     }
+    public Set<ClientLoan> getClientLoans() {
+        return loans;
+    }
+
+    public void addClientLoans(ClientLoan clientLoan) {
+        clientLoan.setClient(this);
+        loans.add(clientLoan);
+    }
+
+    public Set<Card> getCards() {
+        return cards;
+    }
+
+    public void addCards(Card card) {
+        card.setClient(this);
+        cards.add(card);
+    }
 
     public String toString() {
 
         return firstName + " " + lastName+ " "+ email;
     }
+
 }
