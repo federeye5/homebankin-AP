@@ -41,7 +41,7 @@ public class HomebankinApplication {
 			clientRepository.save(client3);
 
 			Account account1 = new Account();
-			account1.setNumber("VM0001");
+			account1.setNumber("VIN-001");
 			account1.setCreationDate(LocalDate.now());
 			account1.setBalance(5000);
 			account1.setClient(client1);
@@ -50,7 +50,7 @@ public class HomebankinApplication {
 			accountRepository.save(account1);
 
 			Account account2 = new Account();
-			account2.setNumber("VM0002");
+			account2.setNumber("VIN-002");
 			account2.setCreationDate(LocalDate.now().plusDays(1));
 			account2.setBalance(7500);
 			account2.setClient(client1);
@@ -60,9 +60,9 @@ public class HomebankinApplication {
 
 
 			Account account3 = new Account();
-			account3.setNumber("VM0003");
-			account3.setCreationDate(LocalDate.now().plusDays(1));
-			account3.setBalance(7500);
+			account3.setNumber("VIN-003");
+			account3.setCreationDate(LocalDate.now().plusDays(5));
+			account3.setBalance(75000);
 			account3.setClient(client2);
 			client2.addAccount(account3);
 			clientRepository.save(client2);

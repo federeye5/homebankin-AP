@@ -32,52 +32,55 @@ public class ClientController {
     }
     @RequestMapping(path = "/clients", method = RequestMethod.POST)
     public ResponseEntity<Object> register(
-
-            @RequestParam String firstName, @RequestParam String lastName,
-
-            @RequestParam String email, @RequestParam String password) {
+            @RequestParam String firstName,
+            @RequestParam String lastName,
+            @RequestParam String email,
+            @RequestParam String password) {
 
 
         if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty()) {
-
             String missingField = "";
 
             if (firstName.isEmpty()) {
-
                 missingField = "First Name";
-
             } else if (lastName.isEmpty()) {
-
                 missingField = "Last Name";
-
             } else if (email.isEmpty()) {
-
                 missingField = "Email";
-
             } else if (password.isEmpty()) {
-
                 missingField = "Password";
-
             }
-
             return new ResponseEntity<>(missingField + " is missing", HttpStatus.FORBIDDEN);
         }
 
-
         if (clientRepository.findByEmail(email) !=  null) {
-
             return new ResponseEntity<>("Name already in use", HttpStatus.FORBIDDEN);
-
         }
-
         clientRepository.save(new Client(firstName, lastName, email, passwordEncoder.encode(password)));
-
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @RequestMapping("/clients/{id}")
-    public ClientDTO clientDTO(@PathVariable Long id){
-        return clientRepository.findById(id).map(clientId -> new ClientDTO(clientId)).orElse(null);
+    public ResponseEntity<Object> getClient(@PathVariable Long id, Authentication authentication) {
+        Client authenticadedClient = clientRepository.findByEmail(authentication.getName());
+        Optional<Client> optionalClient = clientRepository.findById(id);
+
+        if (authenticadedClient != null && optionalClient.isPresent()){
+            Client clientById = optionalClient.get();
+            if(authenticadedClient.getId().equals(clientById.getId())){
+                ClientDTO clientDTO = new ClientDTO(clientById);
+                return ResponseEntity.ok( clientDTO);
+            }else {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not authorized to access this information.");
+            }
+        }
+
+        if (authenticadedClient == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Authenticated client not found");
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("client with this ID not found");
+        }
+
     }
     @RequestMapping("/clients/current")
     public ClientDTO getCurrentClient(Authentication authentication) {

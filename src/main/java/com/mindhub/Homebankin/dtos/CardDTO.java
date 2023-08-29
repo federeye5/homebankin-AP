@@ -12,7 +12,7 @@ public class CardDTO {
     private long id;
     private CardType type;
     private String number;
-    private String cvv;
+    private int cvv;
     private LocalDate fromDate;
     private LocalDate thruDate;
     private String cardHolder;
@@ -42,7 +42,7 @@ public class CardDTO {
         return number;
     }
 
-    public String getCvv() {
+    public int getCvv() {
         return cvv;
     }
 
