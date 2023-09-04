@@ -62,10 +62,13 @@ public class ClientController {
 
     @RequestMapping("/clients/{id}")
     public ResponseEntity<Object> getClient(@PathVariable Long id, Authentication authentication) {
+
         Client authenticadedClient = clientRepository.findByEmail(authentication.getName());
+
         Optional<Client> optionalClient = clientRepository.findById(id);
 
         if (authenticadedClient != null && optionalClient.isPresent()){
+
             Client clientById = optionalClient.get();
             if(authenticadedClient.getId().equals(clientById.getId())){
                 ClientDTO clientDTO = new ClientDTO(clientById);

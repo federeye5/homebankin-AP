@@ -33,7 +33,7 @@ public class HomebankinApplication {
 			client1.setPassword(passwordEncoder.encode("Melba123"));
 
 			Client client2 = new Client("Federico","Reyes","federico@mindhub.com", passwordEncoder.encode("Fede123"));
-            Client client3 = new Client("admin","admin","admin@gmail.com", passwordEncoder.encode("admin"));
+            Client client3 = new Client("Mario","Flores","admin@mindhub.com", passwordEncoder.encode("admin"));
 
 
 			clientRepository.save(client1);
@@ -119,9 +119,9 @@ public class HomebankinApplication {
 			clientLoanRepository.save(clientLoan3);
 			clientLoanRepository.save(clientLoan4);
 
-			Card card1 = new Card(CardType.DEBIT,CardColor.GOLD,"6811 5876 2458 1245",LocalDate.now(),LocalDate.now().plusYears(5),"123",client1.getFirstName()+" "+client1.getLastName());
-			Card card2 = new Card(CardType.CREDIT,CardColor.TITANIUM,"3514 1425 8952 7812",LocalDate.now(),LocalDate.now().plusYears(5),"324",client1.getFirstName()+" "+client1.getLastName());
-			Card card3 = new Card(CardType.CREDIT,CardColor.SILVER,"4387 2345 2458 1248",LocalDate.now(),LocalDate.now().plusYears(5), "231",client2.getFirstName() + " " + client2.getLastName());
+			Card card1 = new Card(CardType.DEBIT,CardColor.GOLD,"6811 5876 2458 1245",LocalDate.now(),LocalDate.now().plusYears(5),123,client1.getFirstName()+" "+client1.getLastName());
+			Card card2 = new Card(CardType.CREDIT,CardColor.TITANIUM,"3514 1425 8952 7812",LocalDate.now(),LocalDate.now().plusYears(5),324,client1.getFirstName()+" "+client1.getLastName());
+			Card card3 = new Card(CardType.CREDIT,CardColor.SILVER,"4387 2345 2458 1248",LocalDate.now(),LocalDate.now().plusYears(5), 231,client2.getFirstName() + " " + client2.getLastName());
 
 			client1.addCards(card1);
 			client1.addCards(card2);
