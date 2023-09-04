@@ -28,17 +28,19 @@ public class WebAuthorization{
 
 
                 .antMatchers("/api/clients/{id}",
-                        "/api/accounts/{id}").hasAuthority("CLIENT")
+                        "/api/accounts/{id}",
+                        "/api/loans").hasAuthority("CLIENT")
 
 
                 .antMatchers(HttpMethod.POST,"/api/clients/current/accounts",
-                        "/api/clients/current/cards",
-                        "/api/transactions").hasAuthority("CLIENT")
+                        "/api/clients/current/cards").hasAuthority("CLIENT")
+
+                .antMatchers(HttpMethod.POST,"/api/transactions", "/api/loans").hasAuthority("CLIENT")
 
 
                 .antMatchers("/api/clients/current",
                         "/api/clients/current/cards",
-                        "/api/transactions").hasAuthority("CLIENT")
+                        "/api/clients/current/accounts").hasAuthority("CLIENT")
 
 
                 .antMatchers( "/api/login", "/api/logout").hasAuthority("CLIENT")
@@ -50,10 +52,10 @@ public class WebAuthorization{
                 .antMatchers("/rest/**", "/api/**").hasAuthority("ADMIN")
 
 
-                .antMatchers("/h2-console","/h2-console/**").hasAuthority("ADMIN")
+                .antMatchers("/h2-console", "/h2-console/**").hasAuthority("ADMIN")
 
 
-                .antMatchers("/web/**").hasAnyAuthority("CLIENT","ADMIN")
+                .antMatchers("/web/**").hasAnyAuthority("CLIENT", "ADMIN")
 
 
                 .anyRequest().denyAll();
@@ -61,7 +63,7 @@ public class WebAuthorization{
 
         http.formLogin().usernameParameter("email").passwordParameter("password").loginPage("/api/login");
 
-        http.logout().logoutUrl("/api/logout");
+        http.logout().logoutUrl("/api/logout").deleteCookies("JSESSIONID");
 
         http.csrf().disable();
 

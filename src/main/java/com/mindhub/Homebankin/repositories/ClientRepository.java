@@ -1,5 +1,4 @@
 package com.mindhub.Homebankin.repositories;
-import java.util.List;
 
 import com.mindhub.Homebankin.models.Client;
 import org.springframework.data.jpa.repository.JpaRepository;

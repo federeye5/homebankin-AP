@@ -12,5 +12,5 @@ import java.util.Optional;
 public interface AccountRepository extends JpaRepository<Account,Long> {
     List<Account> findByClient(Client client);
 
-    Optional<Account> finByNumber(String number);
+    Optional<Account> findByNumber(String number);
 }

@@ -2,8 +2,11 @@ package com.mindhub.Homebankin.controllers;
 
 
 import com.mindhub.Homebankin.dtos.ClientDTO;
+import com.mindhub.Homebankin.models.Account;
 import com.mindhub.Homebankin.models.Client;
+import com.mindhub.Homebankin.repositories.AccountRepository;
 import com.mindhub.Homebankin.repositories.ClientRepository;
+import com.mindhub.Homebankin.services.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -12,8 +15,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import static java.util.stream.Collectors.toList;
 
@@ -21,14 +26,16 @@ import static java.util.stream.Collectors.toList;
 @RequestMapping("/api")
 public class ClientController {
     @Autowired
-    private ClientRepository clientRepository;
+    private ClientService clientService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    AccountRepository accountRepository;
 
     @RequestMapping("/clients")
     public List<ClientDTO> getClients(){
-        return clientRepository.findAll().stream().map(client -> new ClientDTO(client)).collect(toList());
+        return clientService.getClientsDTO();
     }
     @RequestMapping(path = "/clients", method = RequestMethod.POST)
     public ResponseEntity<Object> register(
@@ -50,22 +57,58 @@ public class ClientController {
             } else if (password.isEmpty()) {
                 missingField = "Password";
             }
-            return new ResponseEntity<>(missingField + " is missing", HttpStatus.FORBIDDEN);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(missingField + " is missing");
+
         }
 
-        if (clientRepository.findByEmail(email) !=  null) {
-            return new ResponseEntity<>("Name already in use", HttpStatus.FORBIDDEN);
+        if (clientService.getClientFindByEmail(email) !=  null) {
+
+            //return new ResponseEntity<>("mail already in use", HttpStatus.FORBIDDEN);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("mail already in use");
+
         }
-        clientRepository.save(new Client(firstName, lastName, email, passwordEncoder.encode(password)));
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        Client newClient = new Client(firstName, lastName, email, passwordEncoder.encode(password));
+
+        clientService.saveClient(newClient);
+
+        //create aleatory account number
+        // Generate the random account number
+        Random random = new Random();
+        boolean accountNumberExists;
+        String number;
+
+        do{
+            int numRandom = random.nextInt(900000) + 100000;
+            number = "VIN-" + numRandom;
+
+            String finalNumber = number;
+            accountNumberExists = clientService.getClientsList().stream()
+                    .anyMatch(client -> client.getAccounts().stream()
+                            .anyMatch(account -> account.getNumber().equals(finalNumber)));
+
+            if (!accountNumberExists){
+
+                Account newAccount = new Account(finalNumber, LocalDate.now(),0.0);
+
+                newClient.addAccount(newAccount);
+
+                accountRepository.save(newAccount);
+            }
+
+
+        }while(accountNumberExists);
+
+
+        return ResponseEntity.status(HttpStatus.CREATED).body("Successful registration");
     }
+
 
     @RequestMapping("/clients/{id}")
     public ResponseEntity<Object> getClient(@PathVariable Long id, Authentication authentication) {
 
-        Client authenticadedClient = clientRepository.findByEmail(authentication.getName());
+        Client authenticadedClient = clientService.getClientFindByEmail(authentication.getName());
 
-        Optional<Client> optionalClient = clientRepository.findById(id);
+        Optional<Client> optionalClient = clientService.getClientFindById(id);
 
         if (authenticadedClient != null && optionalClient.isPresent()){
 
@@ -88,7 +131,7 @@ public class ClientController {
     @RequestMapping("/clients/current")
     public ClientDTO getCurrentClient(Authentication authentication) {
 
-        Client client = clientRepository.findByEmail(authentication.getName());
+        Client client = clientService.getClientFindByEmail(authentication.getName());
 
         if (client == null) {
             throw new ResourceNotFoundException("Client not found");

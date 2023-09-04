@@ -76,7 +76,7 @@ public class TransactionController {
         Client authenticatedClient = clientRepository.findByEmail(authentication.getName());
 
         //Find the source account using the account number
-        Optional<Account> optionalOriginAccount = accountRepository.finByNumber(fromAccountNumber);
+        Optional<Account> optionalOriginAccount = accountRepository.findByNumber(fromAccountNumber);
 
         //Check if the optionalOriginAccount is not present (!optionalSourceAccount.isPresent())
         // or if the present account does not belong
@@ -99,7 +99,7 @@ public class TransactionController {
         Account originAccount = optionalOriginAccount.get();
 
         //// Verify that the destination account exists
-        Optional<Account> optionalDestinationAccount = accountRepository.finByNumber(toAccountNumber);
+        Optional<Account> optionalDestinationAccount = accountRepository.findByNumber(toAccountNumber);
 
         if (!optionalDestinationAccount.isPresent() ){
 

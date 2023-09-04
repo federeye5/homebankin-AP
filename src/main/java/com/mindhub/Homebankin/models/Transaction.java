@@ -23,10 +23,10 @@ public class Transaction {
 
     public Transaction(){ }
 
-    public Transaction(String description,double amount, LocalDateTime date, Account account, TransactionType type){
+    public Transaction(String description,double amount, LocalDateTime date, TransactionType type){
         this.description = description;
         this.date = date;
-        this.account = account;
+
         this.type = type;
         this.amount = amount; //* type.getSign();
     }
