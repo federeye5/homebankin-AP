@@ -23,10 +23,10 @@ import java.util.Set;
 @RequestMapping("/api")
 public class CardController {
     @Autowired
-    CardService cardService;
+    private CardService cardService;
 
     @Autowired
-    ClientService clientService;
+    private ClientService clientService;
 
     @RequestMapping(path = "/clients/current/cards",method = RequestMethod.POST)
     public ResponseEntity <Object> createCard(

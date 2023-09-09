@@ -13,7 +13,7 @@ import java.util.List;
 @Service
 public class ClientLoanServiceImplement implements ClientLoanService {
     @Autowired
-    ClientLoanRepository clientLoanRepository;
+    private ClientLoanRepository clientLoanRepository;
 
     @Override
     public void saveClientLoan(ClientLoan clientLoan) {

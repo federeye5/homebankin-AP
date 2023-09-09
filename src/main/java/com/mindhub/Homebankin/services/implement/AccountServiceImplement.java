@@ -18,7 +18,7 @@ import static java.util.stream.Collectors.toList;
 @Service
 public class AccountServiceImplement implements AccountService {
     @Autowired
-    AccountRepository accountRepository;
+    private AccountRepository accountRepository;
 
     @Override
     public Optional<Account> getOptionalAccountByNumber (String number){

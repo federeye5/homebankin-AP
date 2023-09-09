@@ -32,7 +32,7 @@ public class ClientController {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    AccountService accountService;
+    private AccountService accountService;
 
     @RequestMapping("/clients")
     public List<ClientDTO> getClients(){
@@ -80,22 +80,16 @@ public class ClientController {
             int numRandom = random.nextInt(900000) + 100000;
             number = "VIN-" + numRandom;
 
-            String finalNumber = number;
-            accountNumberExists = clientService.getClientsList().stream()
-                    .anyMatch(client -> client.getAccounts().stream()
-                            .anyMatch(account -> account.getNumber().equals(finalNumber)));
-
-            if (!accountNumberExists){
-
-                Account newAccount = accountService.createAccount(finalNumber, LocalDate.now(),0.0);
-
-                newClient.addAccount(newAccount);
-
-                accountService.saveAccount(newAccount);
-            }
-
+            String accountNumber = number;
+            accountNumberExists = clientService.getClientsList().stream().anyMatch(client -> client.getAccounts().stream().anyMatch(account -> account.getNumber().equals(accountNumber)));
 
         }while(accountNumberExists);
+
+        Account newAccount = accountService.createAccount(number,LocalDate.now(),0.0);
+
+        newClient.addAccount(newAccount);
+
+        accountService.saveAccount(newAccount);
 
 
         return ResponseEntity.status(HttpStatus.CREATED).body("Successful registration");
