@@ -12,9 +12,11 @@ public interface ClientService {
 
     ClientDTO getClientDTO(Client client);
 
-    Client getClientFindByEmail(String email);
+    Client getClientByEmail(String email);
 
-    Optional<Client> getClientFindById(Long id);
+    Client getClientById(Long id);
 
     List<Client> getClientsList();
+
+    Client createClient(String firstName, String lastName, String email, String password);
 }

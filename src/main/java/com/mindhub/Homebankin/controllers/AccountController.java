@@ -6,6 +6,8 @@ import com.mindhub.Homebankin.models.Account;
 import com.mindhub.Homebankin.models.Client;
 import com.mindhub.Homebankin.repositories.AccountRepository;
 import com.mindhub.Homebankin.repositories.ClientRepository;
+import com.mindhub.Homebankin.services.AccountService;
+import com.mindhub.Homebankin.services.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,14 +29,14 @@ import static java.util.stream.Collectors.toList;
 @RequestMapping("/api")
 public class AccountController {
     @Autowired
-    private AccountRepository accountRepository;
+    private AccountService accountService;
 
     @Autowired
-    private ClientRepository clientRepository;
+    private ClientService clientService;
 
     @RequestMapping("/accounts")
     public List<AccountDTO> getAccounts(){
-        return accountRepository.findAll().stream().map(AccountDTO::new).collect(Collectors.toList());
+        return accountService.getListAccountDTO();
     }
 
     @RequestMapping("/accounts/{id}")
@@ -45,9 +47,9 @@ public class AccountController {
 
         }
 
-        Optional<Account> accountOptional = accountRepository.findById(id);
+        Optional<Account> accountOptional = accountService.getOptionalAccountById(id);
 
-        if (!accountOptional.isPresent()) {
+        if (accountOptional.isEmpty()) {
 
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account with this ID not found");
 
@@ -55,11 +57,11 @@ public class AccountController {
 
         Account account = accountOptional.get();
 
-        Client authenticadedClient = clientRepository.findByEmail(authentication.getName());
+        Client authenticadedClient = clientService.getClientByEmail(authentication.getName());
 
         if (account.getClient().equals(authenticadedClient)){
 
-            AccountDTO accountDTO = new AccountDTO(account);
+            AccountDTO accountDTO = accountService.getAccountDTO(account);
 
             return ResponseEntity.ok(accountDTO);
 
@@ -75,9 +77,9 @@ public class AccountController {
 
     @RequestMapping(path = "/clients/current/accounts", method = RequestMethod.POST)
     public ResponseEntity<Object> createAccount(Authentication authentication) {
-        Client authenticatedClient = clientRepository.findByEmail(authentication.getName());
+        Client authenticatedClient = clientService.getClientByEmail(authentication.getName());
         if (authenticatedClient != null) {
-            List<Account> accounts = accountRepository.findByClient(authenticatedClient);
+            List<Account> accounts = accountService.getAccountsByClient(authenticatedClient);
 
             if (accounts.size() >= 3) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You can only have up to three accounts.");
@@ -90,12 +92,12 @@ public class AccountController {
                 number = "VIN-" + numRandom;
 
                 String finalNumber = number;
-                accountNumberExists = clientRepository.findAll().stream().anyMatch(client -> client.getAccounts().stream().anyMatch(account -> account.getNumber().equals(finalNumber)));
+                accountNumberExists = clientService.getClientsList().stream().anyMatch(client -> client.getAccounts().stream().anyMatch(account -> account.getNumber().equals(finalNumber)));
 
                 if (!accountNumberExists) {
-                    Account newAccount = new Account(finalNumber, LocalDate.now(), 0.0);
+                    Account newAccount = accountService.createAccount(finalNumber, LocalDate.now(), 0.0);
                     authenticatedClient.addAccount(newAccount);
-                    accountRepository.save(newAccount);
+                    accountService.saveAccount(newAccount);
                 }
             } while (accountNumberExists);
             return ResponseEntity.status(HttpStatus.CREATED).body("Account created");
@@ -106,18 +108,18 @@ public class AccountController {
 
     @RequestMapping(path = "/clients/current/accounts")
     public ResponseEntity<Object> getAccounts(Authentication authentication){
-        Client authenticatedClient = clientRepository.findByEmail(authentication.getName());
+        Client authenticatedClient = clientService.getClientByEmail(authentication.getName());
 
         if (authenticatedClient == null ) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized, login required");
         }
-        List<Account> clientAccounts = accountRepository.findByClient(authenticatedClient);
+        List<Account> clientAccounts = accountService.getAccountsByClient(authenticatedClient);
 
         if (clientAccounts == null) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No accounts found");
         }
 
-        List<AccountDTO> accountDTOs = clientAccounts.stream().map(AccountDTO::new).collect(Collectors.toList());
+        List<AccountDTO> accountDTOs = accountService.getListAccountDTO();
 
         return ResponseEntity.ok(accountDTOs);
 

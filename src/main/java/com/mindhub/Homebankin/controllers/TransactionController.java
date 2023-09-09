@@ -7,6 +7,9 @@ import com.mindhub.Homebankin.models.TransactionType;
 import com.mindhub.Homebankin.repositories.AccountRepository;
 import com.mindhub.Homebankin.repositories.ClientRepository;
 import com.mindhub.Homebankin.repositories.TransactionRepository;
+import com.mindhub.Homebankin.services.AccountService;
+import com.mindhub.Homebankin.services.ClientService;
+import com.mindhub.Homebankin.services.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,13 +29,13 @@ import java.util.Optional;
 public class TransactionController {
 
     @Autowired
-    AccountRepository accountRepository;
+    AccountService accountService;
 
     @Autowired
-    ClientRepository clientRepository;
+    ClientService clientService;
 
     @Autowired
-    TransactionRepository transactionRepository;
+    TransactionService transactionService;
 
     @Transactional
     @RequestMapping(path = "/transactions", method = RequestMethod.POST)
@@ -42,7 +45,7 @@ public class TransactionController {
             @RequestParam long amount,
             @RequestParam String description,
             Authentication authentication){
-        // Check that the parameters are not empty
+
         if (fromAccountNumber.isBlank() || toAccountNumber.isBlank() || amount <= 0 ){
 
             String missingField = "";
@@ -65,22 +68,17 @@ public class TransactionController {
 
         }
 
-        // Check that the account numbers are not the same
         if (fromAccountNumber.equals(toAccountNumber)) {
 
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("The source account is the same as the destination account");
 
         }
 
-        // Get the authenticated client
-        Client authenticatedClient = clientRepository.findByEmail(authentication.getName());
 
-        //Find the source account using the account number
-        Optional<Account> optionalOriginAccount = accountRepository.findByNumber(fromAccountNumber);
+        Client authenticatedClient = clientService.getClientByEmail(authentication.getName());
 
-        //Check if the optionalOriginAccount is not present (!optionalSourceAccount.isPresent())
-        // or if the present account does not belong
-        // to the authenticated client (!optionalOriginAccount.get().getClient().equals(authenticatedClient))
+        Optional<Account> optionalOriginAccount = accountService.getOptionalAccountByNumber(fromAccountNumber);
+
         if (!optionalOriginAccount.isPresent() || !optionalOriginAccount.get().getClient().equals(authenticatedClient)){
 
             if (optionalOriginAccount == null) {
@@ -99,7 +97,7 @@ public class TransactionController {
         Account originAccount = optionalOriginAccount.get();
 
         //// Verify that the destination account exists
-        Optional<Account> optionalDestinationAccount = accountRepository.findByNumber(toAccountNumber);
+        Optional<Account> optionalDestinationAccount = accountService.getOptionalAccountByNumber(toAccountNumber);
 
         if (!optionalDestinationAccount.isPresent() ){
 
@@ -142,10 +140,10 @@ public class TransactionController {
         //add to the destination account
         destinationAccount.setBalance(destinationAccount.getBalance() + amount);
 
-        transactionRepository.save(debitTransaction);
-        transactionRepository.save(creditTransaction);
-        accountRepository.save(originAccount);
-        accountRepository.save(destinationAccount);
+        transactionService.saveTransaction(debitTransaction);
+        transactionService.saveTransaction(creditTransaction);
+        accountService.saveAccount(originAccount);
+        accountService.saveAccount(destinationAccount);
 
         return ResponseEntity.status(HttpStatus.CREATED).body("Transaction created successfully.");
 

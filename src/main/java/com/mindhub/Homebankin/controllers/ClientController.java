@@ -6,6 +6,7 @@ import com.mindhub.Homebankin.models.Account;
 import com.mindhub.Homebankin.models.Client;
 import com.mindhub.Homebankin.repositories.AccountRepository;
 import com.mindhub.Homebankin.repositories.ClientRepository;
+import com.mindhub.Homebankin.services.AccountService;
 import com.mindhub.Homebankin.services.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
@@ -31,7 +32,7 @@ public class ClientController {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    AccountRepository accountRepository;
+    AccountService accountService;
 
     @RequestMapping("/clients")
     public List<ClientDTO> getClients(){
@@ -61,18 +62,16 @@ public class ClientController {
 
         }
 
-        if (clientService.getClientFindByEmail(email) !=  null) {
+        if (clientService.getClientByEmail(email) !=  null) {
 
-            //return new ResponseEntity<>("mail already in use", HttpStatus.FORBIDDEN);
+
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("mail already in use");
 
         }
-        Client newClient = new Client(firstName, lastName, email, passwordEncoder.encode(password));
+        Client newClient = clientService.createClient(firstName, lastName, email, passwordEncoder.encode(password));
 
         clientService.saveClient(newClient);
 
-        //create aleatory account number
-        // Generate the random account number
         Random random = new Random();
         boolean accountNumberExists;
         String number;
@@ -88,11 +87,11 @@ public class ClientController {
 
             if (!accountNumberExists){
 
-                Account newAccount = new Account(finalNumber, LocalDate.now(),0.0);
+                Account newAccount = accountService.createAccount(finalNumber, LocalDate.now(),0.0);
 
                 newClient.addAccount(newAccount);
 
-                accountRepository.save(newAccount);
+                accountService.saveAccount(newAccount);
             }
 
 
@@ -106,16 +105,14 @@ public class ClientController {
     @RequestMapping("/clients/{id}")
     public ResponseEntity<Object> getClient(@PathVariable Long id, Authentication authentication) {
 
-        Client authenticadedClient = clientService.getClientFindByEmail(authentication.getName());
+        Client authenticadedClient = clientService.getClientByEmail(authentication.getName());
 
-        Optional<Client> optionalClient = clientService.getClientFindById(id);
+        Client client = clientService.getClientById(id);
 
-        if (authenticadedClient != null && optionalClient.isPresent()){
-
-            Client clientById = optionalClient.get();
-            if(authenticadedClient.getId().equals(clientById.getId())){
-                ClientDTO clientDTO = new ClientDTO(clientById);
-                return ResponseEntity.ok( clientDTO);
+        if (authenticadedClient != null && client != null){
+            if(authenticadedClient.getId().equals(client.getId())){
+                ClientDTO clientDTO = clientService.getClientDTO(client);
+                return ResponseEntity.ok(clientDTO);
             }else {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not authorized to access this information.");
             }
@@ -131,12 +128,12 @@ public class ClientController {
     @RequestMapping("/clients/current")
     public ClientDTO getCurrentClient(Authentication authentication) {
 
-        Client client = clientService.getClientFindByEmail(authentication.getName());
+        Client client = clientService.getClientByEmail(authentication.getName());
 
         if (client == null) {
             throw new ResourceNotFoundException("Client not found");
         }
 
-        return new ClientDTO(client);
+        return clientService.getClientDTO((client));
     }
 }
