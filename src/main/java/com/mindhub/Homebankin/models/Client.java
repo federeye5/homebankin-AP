@@ -25,14 +25,16 @@ public class Client {
     private String lastName;
     private String email;
     private String password;
+    private Role role;
 
     public Client() { }
 
-    public Client(String first, String last, String email, String password) {
+    public Client(String first, String last, String email, String password, Role role) {
         this.firstName = first;
         this.lastName = last;
         this.email = email;
         this.password = password;
+        this.role = role;
     }
     public Long getId(){
 
@@ -100,9 +102,18 @@ public class Client {
         this.password = password;
     }
 
+    public  Role getRole(){
+        return role;
+    }
+
+    public void  setRole(Role role){
+        this.role = role;
+    }
+
     public String toString() {
 
         return firstName + " " + lastName+ " "+ email;
     }
+
 
 }

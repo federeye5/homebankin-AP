@@ -31,9 +31,10 @@ public class HomebankinApplication {
 			client1.setLastName("Morel");
 			client1.setEmail("melba@mindhub.com");
 			client1.setPassword(passwordEncoder.encode("Melba123"));
+			client1.setRole(Role.CLIENT);
 
-			Client client2 = new Client("Federico","Reyes","federico@mindhub.com", passwordEncoder.encode("Fede123"));
-            Client client3 = new Client("Mario","Flores","admin@mindhub.com", passwordEncoder.encode("admin"));
+			Client client2 = new Client("Federico","Reyes","federico@mindhub.com", passwordEncoder.encode("Fede123"),Role.CLIENT);
+            Client client3 = new Client("Mario","Flores","admin@mindhub.com", passwordEncoder.encode("admin"),Role.ADMIN);
 
 			Account account1 = new Account();
 			account1.setNumber("VIN-001");

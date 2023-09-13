@@ -4,6 +4,7 @@ package com.mindhub.Homebankin.controllers;
 import com.mindhub.Homebankin.dtos.ClientDTO;
 import com.mindhub.Homebankin.models.Account;
 import com.mindhub.Homebankin.models.Client;
+import com.mindhub.Homebankin.models.Role;
 import com.mindhub.Homebankin.repositories.AccountRepository;
 import com.mindhub.Homebankin.repositories.ClientRepository;
 import com.mindhub.Homebankin.services.AccountService;
@@ -68,7 +69,7 @@ public class ClientController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("mail already in use");
 
         }
-        Client newClient = clientService.createClient(firstName, lastName, email, passwordEncoder.encode(password));
+        Client newClient = clientService.createClient(firstName, lastName, email, passwordEncoder.encode(password), Role.CLIENT);
 
         clientService.saveClient(newClient);
 

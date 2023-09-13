@@ -2,6 +2,7 @@ package com.mindhub.Homebankin.services.implement;
 
 import com.mindhub.Homebankin.dtos.ClientDTO;
 import com.mindhub.Homebankin.models.Client;
+import com.mindhub.Homebankin.models.Role;
 import com.mindhub.Homebankin.repositories.ClientRepository;
 import com.mindhub.Homebankin.services.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,8 +53,8 @@ public class ClientServiceImplement implements ClientService {
     }
 
     @Override
-    public Client createClient(String firstName, String lastName, String email, String password) {
-        return new Client(firstName,lastName,email,password);
+    public Client createClient(String firstName, String lastName, String email, String password, Role role) {
+        return new Client(firstName,lastName,email,password, role);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.mindhub.Homebankin.configurations;
 
 import com.mindhub.Homebankin.models.Client;
+import com.mindhub.Homebankin.models.Role;
 import com.mindhub.Homebankin.repositories.ClientRepository;
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class WebAuthentication extends GlobalAuthenticationConfigurerAdapter {
         auth.userDetailsService(inputName -> {
             Client client = clientRepository.findByEmail(inputName);
             if (client != null) {
-                if (client.getEmail().endsWith("@mindhub.com")){
+                if (isAdminEmail(client.getEmail()) & client.getRole().equals(Role.ADMIN)){
                     return new User(client.getEmail(), client.getPassword(), AuthorityUtils.createAuthorityList("ADMIN"));
                 }else{
                     return new User(client.getEmail(), client.getPassword(), AuthorityUtils.createAuthorityList("CLIENT"));
@@ -38,4 +39,9 @@ public class WebAuthentication extends GlobalAuthenticationConfigurerAdapter {
     public PasswordEncoder passwordEncoder(){
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
+
+    public boolean isAdminEmail(String email){
+        return email.endsWith("admin@mindhub.com");
+    }
+
 }
