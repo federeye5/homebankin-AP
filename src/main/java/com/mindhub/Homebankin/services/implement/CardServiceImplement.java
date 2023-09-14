@@ -31,6 +31,16 @@ public class CardServiceImplement implements CardService {
     }
 
     @Override
+    public Card getCardById(Long id) {
+        return cardRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public void deleteCard(Card card) {
+        cardRepository.delete(card);
+    }
+
+    @Override
     public Card createCard(CardType type, CardColor color, String number, LocalDate fromDate, LocalDate thruDate, int cvv, String cardHolder) {
         return new Card(type,color,number,fromDate,thruDate,cvv,cardHolder);
     }

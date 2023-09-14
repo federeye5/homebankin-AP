@@ -28,7 +28,7 @@ public class CardController {
     @Autowired
     private ClientService clientService;
 
-    @RequestMapping(path = "/clients/current/cards",method = RequestMethod.POST)
+    @PostMapping("/clients/current/cards")
     public ResponseEntity <Object> createCard(
             @RequestParam CardColor cardColor,
             @RequestParam CardType cardType,
@@ -79,5 +79,28 @@ public class CardController {
     private int generateRandomCVV() {
         Random random = new Random();
         return random.nextInt(999);
+    }
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Object> deleteCard(@PathVariable("id") Long id, Authentication authentication){
+        if (authentication != null){
+
+            Client client = clientService.getClientByEmail(authentication.getName());
+
+            if (id == null){
+                return new ResponseEntity<>("Please, indicate the ID card number", HttpStatus.FORBIDDEN);
+            }
+
+            Card cardToDelete = cardService.getCardById(id);
+
+            if (cardToDelete == null){
+                return new ResponseEntity<>("There is no card with that ID", HttpStatus.FORBIDDEN);
+            }
+
+            cardService.deleteCard(cardToDelete);
+            return new ResponseEntity<>("The Card has been successfully removed" ,HttpStatus.CREATED);
+
+
+        }
+        return new ResponseEntity<>("You are not logged it", HttpStatus.FORBIDDEN);
     }
 }

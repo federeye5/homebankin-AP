@@ -13,5 +13,9 @@ public interface CardService {
 
     boolean cardExistsByCvv(int cvv);
 
+    Card getCardById(Long id);
+
+    void deleteCard(Card card);
+
     Card createCard(CardType type, CardColor color, String number, LocalDate fromDate, LocalDate thruDate, int cvv, String cardHolder);
 }

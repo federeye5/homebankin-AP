@@ -14,10 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
@@ -38,7 +35,7 @@ public class TransactionController {
     private TransactionService transactionService;
 
     @Transactional
-    @RequestMapping(path = "/transactions", method = RequestMethod.POST)
+    @PostMapping("/transactions")
     public ResponseEntity<Object> createTransaction(
             @RequestParam String fromAccountNumber,
             @RequestParam String toAccountNumber,
@@ -93,10 +90,8 @@ public class TransactionController {
 
         }
 
-        //get the origin account
         Account originAccount = optionalOriginAccount.get();
 
-        //// Verify that the destination account exists
         Optional<Account> optionalDestinationAccount = accountService.getOptionalAccountByNumber(toAccountNumber);
 
         if (!optionalDestinationAccount.isPresent() ){
@@ -105,10 +100,8 @@ public class TransactionController {
 
         }
 
-        //get the destination account
         Account destinationAccount = optionalDestinationAccount.get();
 
-        // Check that the origin account has the amount available
         if (originAccount.getBalance() < amount) {
 
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You do not have the funds to complete this transaction");
@@ -129,15 +122,12 @@ public class TransactionController {
         creditTransaction.setType(TransactionType.CREDIT);
         creditTransaction.setDate(LocalDateTime.now());
 
-        //link transaction with account
         originAccount.addTransactions(debitTransaction);
         destinationAccount.addTransactions(creditTransaction);
 
-        //Update amounts and save transactions in the repository
-        //subtraction from the origin account
+
         originAccount.setBalance(originAccount.getBalance() - amount);
 
-        //add to the destination account
         destinationAccount.setBalance(destinationAccount.getBalance() + amount);
 
         transactionService.saveTransaction(debitTransaction);

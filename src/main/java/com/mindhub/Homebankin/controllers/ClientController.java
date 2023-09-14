@@ -35,11 +35,11 @@ public class ClientController {
     @Autowired
     private AccountService accountService;
 
-    @RequestMapping("/clients")
+    @GetMapping("/clients")
     public List<ClientDTO> getClients(){
         return clientService.getClientsDTO();
     }
-    @RequestMapping(path = "/clients", method = RequestMethod.POST)
+    @PostMapping("/clients")
     public ResponseEntity<Object> register(
             @RequestParam String firstName,
             @RequestParam String lastName,
@@ -97,7 +97,7 @@ public class ClientController {
     }
 
 
-    @RequestMapping("/clients/{id}")
+    @GetMapping("/clients/{id}")
     public ResponseEntity<Object> getClient(@PathVariable Long id, Authentication authentication) {
 
         Client authenticadedClient = clientService.getClientByEmail(authentication.getName());
@@ -120,7 +120,7 @@ public class ClientController {
         }
 
     }
-    @RequestMapping("/clients/current")
+    @GetMapping("/clients/current")
     public ClientDTO getCurrentClient(Authentication authentication) {
 
         Client client = clientService.getClientByEmail(authentication.getName());
